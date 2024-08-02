@@ -33,6 +33,7 @@ public class Region implements SudCelda {
         return celdas[fila][col];
     }
 
+    @Override
     public boolean esValido() {
         boolean[] vistos = new boolean[10];
         for (int i = 0; i < 3; i++) {
@@ -47,6 +48,7 @@ public class Region implements SudCelda {
         return true;
     }
 
+    @Override
     public void limpiar() {
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {

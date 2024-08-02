@@ -27,6 +27,5 @@ public abstract class Celda implements SudCelda {
         this.valor = 0;
     }
 
-    @Override
     public abstract boolean esValido();
 }

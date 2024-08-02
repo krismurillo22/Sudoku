@@ -10,15 +10,18 @@ import java.util.Random;
  *
  * @author User
  */
-public class Tablero implements SudCelda{
-   private Casilla[][] tablero;
+public class Tablero implements SudCelda {
+
+    private Casilla[][] tablero;
     private Region[][] regiones;
+    private Random rand = new Random();
 
     public Tablero() {
         tablero = new Casilla[9][9];
         regiones = new Region[3][3];
         inicializarTablero();
-        rellenarTableroConNumerosAleatorios();
+        generarTableroCompleto();
+        eliminarNumerosParaPuzzle();
     }
 
     private void inicializarTablero() {
@@ -40,21 +43,82 @@ public class Tablero implements SudCelda{
         }
     }
 
-    private void rellenarTableroConNumerosAleatorios() {
-        Random rand = new Random();
-        int numIniciales = 20 + rand.nextInt(11); // Entre 20 y 30 celdas
-
-        for (int n = 0; n < numIniciales; n++) {
-            int fila, col, valor;
-            do {
-                fila = rand.nextInt(9);
-                col = rand.nextInt(9);
-                valor = 1 + rand.nextInt(9);
-            } while (tablero[fila][col].getValor() != 0 || !esNumeroValido(fila, col, valor));
-
-            tablero[fila][col].setValor(valor);
+    private boolean resolverTablero(int fila, int col) {
+        if (fila == 9) {
+            fila = 0;
+            if (++col == 9) {
+                return true;
+            }
         }
-        System.out.println("Cantidad de celdas llenas: " + numIniciales);
+
+        if (tablero[fila][col].getValor() != 0) {
+            return resolverTablero(fila + 1, col);
+        }
+
+        for (int num = 1; num <= 9; num++) {
+            if (esNumeroValido(fila, col, num)) {
+                tablero[fila][col].setValor(num);
+                if (resolverTablero(fila + 1, col)) {
+                    return true;
+                }
+                tablero[fila][col].setValor(0);
+            }
+        }
+
+        return false;
+    }
+
+    private void generarTableroCompleto() {
+        resolverTablero(0, 0);
+    }
+
+    private void eliminarNumerosParaPuzzle() {
+        int numCeldasAEliminar = 40 + rand.nextInt(11); // Entre 40 y 50 celdas
+        while (numCeldasAEliminar > 0) {
+            int fila = rand.nextInt(9);
+            int col = rand.nextInt(9);
+            if (tablero[fila][col].getValor() != 0) {
+                int temp = tablero[fila][col].getValor();
+                tablero[fila][col].setValor(0);
+                if (!esSolucionUnica()) {
+                    tablero[fila][col].setValor(temp);
+                } else {
+                    tablero[fila][col].setGenerado(false); // Marcar como modificable
+                    numCeldasAEliminar--;
+                }
+            }
+        }
+    }
+
+    private boolean esSolucionUnica() {
+        return contarSoluciones(0, 0) == 1;
+    }
+
+    private int contarSoluciones(int fila, int col) {
+        if (fila == 9) {
+            fila = 0;
+            if (++col == 9) {
+                return 1;
+            }
+        }
+
+        if (tablero[fila][col].getValor() != 0) {
+            return contarSoluciones(fila + 1, col);
+        }
+
+        int count = 0;
+        for (int num = 1; num <= 9; num++) {
+            if (esNumeroValido(fila, col, num)) {
+                tablero[fila][col].setValor(num);
+                count += contarSoluciones(fila + 1, col);
+                tablero[fila][col].setValor(0);
+                if (count > 1) {
+                    return count;
+                }
+            }
+        }
+
+        return count;
     }
 
     public boolean esNumeroValido(int fila, int col, int valor) {
@@ -75,6 +139,11 @@ public class Tablero implements SudCelda{
         return true;
     }
 
+    public boolean esModificable(int fila, int col) {
+        return !tablero[fila][col].esGenerado();
+    }
+
+    @Override
     public boolean esValido() {
         for (int i = 0; i < 9; i++) {
             boolean[] filaVistos = new boolean[10];
@@ -101,6 +170,7 @@ public class Tablero implements SudCelda{
         return true;
     }
 
+    @Override
     public void limpiar() {
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
@@ -121,5 +191,9 @@ public class Tablero implements SudCelda{
 
     public int getValor(int fila, int col) {
         return tablero[fila][col].getValor();
+    }
+
+    public Casilla getCasilla(int fila, int col) {
+        return tablero[fila][col];
     }
 }

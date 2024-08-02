@@ -68,7 +68,28 @@ public class Sudoku extends JFrame {
                             }
                         }
                         if (found) {
-                            abrirDialogoAgregarNumero(fila, col);
+                            if (tablero.esModificable(fila, col)) {
+                                if (!campos[fila][col].getText().isEmpty()) {
+                                    int respuesta = JOptionPane.showOptionDialog(
+                                            null,
+                                            "¿Deseas borrar el número?",
+                                            "Confirmar",
+                                            JOptionPane.YES_NO_OPTION,
+                                            JOptionPane.QUESTION_MESSAGE,
+                                            null,
+                                            new Object[]{"Sí", "No"},
+                                            "Sí"
+                                    );
+                                    if (respuesta == JOptionPane.YES_OPTION) {
+                                        tablero.setValor(fila, col, 0);
+                                        actualizarGUI();
+                                    }
+                                } else {
+                                    abrirDialogoAgregarNumero(fila, col);
+                                }
+                            } else {
+                                JOptionPane.showMessageDialog(null, "No se puede modificar un número inicial", "Error", JOptionPane.ERROR_MESSAGE);
+                            }
                         }
                     }
                 });
@@ -79,7 +100,6 @@ public class Sudoku extends JFrame {
         actualizarGUI();
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(600, 600);
-        setLocationRelativeTo(null);
         setVisible(true);
     }
 
@@ -108,12 +128,25 @@ public class Sudoku extends JFrame {
     }
 
     private void actualizarGUI() {
+        boolean completo = true;
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
                 int valor = tablero.getValor(i, j);
                 campos[i][j].setText(valor == 0 ? "" : String.valueOf(valor));
+                if (tablero.getCasilla(i, j).esGenerado()) {
+                    campos[i][j].setForeground(Color.RED);
+                } else {
+                    campos[i][j].setForeground(Color.BLACK);
+                }
+                if (valor == 0) {
+                    completo = false;
+                }
             }
         }
+
+        if (completo && tablero.esValido()) {
+            JOptionPane.showMessageDialog(this, "¡Felicidades, ganaste, eres un crack!");
+            System.exit(0);
+        }
     }
-    
 }
