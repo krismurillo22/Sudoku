@@ -4,11 +4,10 @@
  */
 package sudoku;
 
-
 /**
  *
  * @author User
-*/
+ */
 public class Casilla extends Celda {
 
     private boolean generado;

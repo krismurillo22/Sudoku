@@ -51,7 +51,7 @@ public class Sudoku extends JFrame {
             for (int j = 0; j < 9; j++) {
                 campos[i][j] = new JTextField();
                 campos[i][j].setHorizontalAlignment(JTextField.CENTER);
-                campos[i][j].setFont(new Font("Arial", Font.BOLD, 20));
+                campos[i][j].setFont(new Font("Times New Roman", Font.BOLD, 20));
                 campos[i][j].setEditable(false);
                 campos[i][j].addMouseListener(new MouseAdapter() {
                     public void mouseClicked(MouseEvent evt) {

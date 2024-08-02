@@ -15,6 +15,7 @@ public abstract class Celda implements SudCelda {
     public Celda(int valor) {
         this.valor = valor;
     }
+
     public int getValor() {
         return valor;
     }
@@ -23,9 +24,11 @@ public abstract class Celda implements SudCelda {
         this.valor = valor;
     }
 
+    @Override
     public void limpiar() {
         this.valor = 0;
     }
 
+    @Override
     public abstract boolean esValido();
 }

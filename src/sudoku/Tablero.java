@@ -11,11 +11,14 @@ import java.util.Random;
  * @author User
  */
 public class Tablero implements SudCelda {
+    
+    // Atributos
 
     private Casilla[][] tablero;
     private Region[][] regiones;
     private Random rand = new Random();
 
+    // Constructor 
     public Tablero() {
         tablero = new Casilla[9][9];
         regiones = new Region[3][3];
@@ -70,20 +73,28 @@ public class Tablero implements SudCelda {
 
     private void generarTableroCompleto() {
         resolverTablero(0, 0);
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                if (tablero[i][j].getValor() != 0) {
+                    tablero[i][j].setGenerado(true);
+                }
+            }
+        }
     }
 
     private void eliminarNumerosParaPuzzle() {
-        int numCeldasAEliminar = 40 + rand.nextInt(11); // Entre 40 y 50 celdas
+        int numCeldasAEliminar = 40 + rand.nextInt(11);
         while (numCeldasAEliminar > 0) {
             int fila = rand.nextInt(9);
             int col = rand.nextInt(9);
             if (tablero[fila][col].getValor() != 0) {
                 int temp = tablero[fila][col].getValor();
                 tablero[fila][col].setValor(0);
+                tablero[fila][col].setGenerado(false);
                 if (!esSolucionUnica()) {
                     tablero[fila][col].setValor(temp);
+                    tablero[fila][col].setGenerado(true);
                 } else {
-                    tablero[fila][col].setGenerado(false); // Marcar como modificable
                     numCeldasAEliminar--;
                 }
             }
