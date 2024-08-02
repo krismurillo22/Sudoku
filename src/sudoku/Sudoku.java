@@ -4,17 +4,39 @@
  */
 package sudoku;
 
+import java.awt.Dimension;
+import java.awt.GridLayout;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+
 /**
  *
  * @author User
  */
-public class Sudoku {
+public class Sudoku extends JFrame {
 
-    /**
-     * @param args the command line arguments
-     */
+    private JPanel panelTablero;
+    
+    public Sudoku() {
+        setMinimumSize(new Dimension(600, 600));
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+        
+        
+        panelTablero = new JPanel();
+        add(panelTablero);
+        panelTablero.setLayout(new GridLayout(9, 9));
+
+        setVisible(true);
+    }  
+       
+    
     public static void main(String[] args) {
-        // TODO code application logic here
+        new Sudoku();
+        
     }
     
 }
